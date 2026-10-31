@@ -239,7 +239,7 @@ if (contactForm) {
         showToast("Something went wrong. Please try again.");
       }
     } catch (error) {
-      showToast("Network error. Please try again.");
+      showToast("Error: " + (result.message || "Unknown error"));
     }
 
     button.textContent = oldText;
