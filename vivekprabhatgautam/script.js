@@ -212,30 +212,40 @@ if (ebookGrid) {
   });
 }
 
-/* Contact form: prepare a message in the visitor's email app.
-   Change this to an email address you actually use. */
+/* Contact form: sends the message to your email through Web3Forms. */
 const contactForm = document.getElementById("contactForm");
 
 if (contactForm) {
-  contactForm.addEventListener("submit", event => {
+  contactForm.addEventListener("submit", async event => {
     event.preventDefault();
 
-    const data = new FormData(contactForm);
-    const name = String(data.get("name") || "").trim();
-    const email = String(data.get("email") || "").trim();
-    const message = String(data.get("message") || "").trim();
+    const button = contactForm.querySelector('button[type="submit"]');
+    const oldText = button.textContent;
+    button.textContent = "Sending...";
+    button.disabled = true;
 
-    const recipient = "hello@vivekprabhatgautam.in";
-    const subject = encodeURIComponent(`Website enquiry from ${name}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
-    );
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(contactForm)))
+      });
+      const result = await response.json();
 
-    window.location.href =
-      `mailto:${recipient}?subject=${subject}&body=${body}`;
+      if (result.success) {
+        showToast("Thank you! Your message has been sent.");
+        contactForm.reset();
+      } else {
+        showToast("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      showToast("Network error. Please try again.");
+    }
+
+    button.textContent = oldText;
+    button.disabled = false;
   });
 }
-
 /* Small on-screen notifications. */
 let toastTimeout;
 
