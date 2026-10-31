@@ -232,12 +232,12 @@ if (contactForm) {
       });
       const result = await response.json();
 
-      if (result.success) {
-        showToast("Thank you! Your message has been sent.");
-        contactForm.reset();
-      } else {
-        showToast("Something went wrong. Please try again.");
-      }
+    if (result.success) {
+  alert("Thank you! Your message has been sent.");
+  contactForm.reset();
+} else {
+  alert("Error: " + (result.message || "Unknown error"));
+}
     } catch (error) {
       showToast("Error: " + (result.message || "Unknown error"));
     }
